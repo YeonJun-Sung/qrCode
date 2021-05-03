@@ -1,8 +1,8 @@
 ### Eclipse ###
 
 .metadata
-mapo/bin/
-mapo/tmp/
+qr/bin/
+qr/tmp/
 *.tmp
 *.bak
 *.swp
@@ -11,8 +11,8 @@ local.properties
 .settings/
 .loadpath
 .recommenders
-mapo/target/
-mapo/bulid/
+qr/target/
+qr/bulid/
 MANIFEST.MF
 # MacOS auto created files
 .DS_Store
