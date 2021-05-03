@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:context="http://www.springframework.org/schema/context"
+		xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+		xmlns:aop="http://www.springframework.org/schema/aop"
+		xmlns:tx="http://www.springframework.org/schema/tx"
+		xsi:schemaLocation="http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+							http://www.springframework.org/schema/beans 
+							https://www.springframework.org/schema/beans/spring-beans.xsd
+							http://www.springframework.org/schema/context 
+							http://www.springframework.org/schema/context/spring-context-4.3.xsd
+							http://www.springframework.org/schema/aop 
+							http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+							http://www.springframework.org/schema/tx 
+							http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+		
+	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
+		<property name="driverClassName" value="net.sf.log4jdbc.sql.jdbcapi.DriverSpy"/>
+		<property name="jdbcUrl" value="jdbc:log4jdbc:mysql://127.0.0.1:3306/qr?useSSL=false&amp;allowMultiQueries=true&amp;serverTimezone=Asia/Seoul&amp;allowPublicKeyRetrieval=true&amp;useUnicode=true&amp;characterEncoding=utf8&amp;"/>
+		<property name="username" value="root"></property>
+		<property name="password" value="tothepp3545"></property>
+		<property name="autoCommit" value="true"></property>
+		<property name="connectionTimeout" value="30000"></property>
+		<property name="idleTimeout" value="600000"></property>
+		<property name="maxLifetime" value="1800000"></property>
+		<property name="minimumIdle" value="2"></property>
+		<property name="maximumPoolSize" value="2"></property>
+	</bean>
+
+	<!--HikariCP Configuration -->
+	<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
+		<constructor-arg ref="hikariConfig" />
+	</bean>
+	
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="mapperLocations" value="classpath*:mapper/**/*.xml" />
+	</bean>
+	
+	<bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate" destroy-method="clearCache">
+        <constructor-arg index="0" ref="sqlSession"/>
+    </bean>
+    
+    <!-- Transaction 설정 -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+    	<property name="dataSource" ref="dataSource"/>
+    </bean>
+    
+    <!-- 첨부파일의 크기(byte)를 설정함 1024 * 1024 * 10 = 10,485,760 (10MB)  -->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+    	<property name="maxUploadSize" value="10485760"/> 
+    	<property name="maxInMemorySize" value="10485760"/>
+    	<property name="defaultEncoding" value="UTF-8"/>
+    </bean>
+    
+	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />
+</beans>

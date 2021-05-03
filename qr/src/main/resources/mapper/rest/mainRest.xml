@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mainRest">
+	<insert id="generateQR" parameterType="hashmap">
+		INSERT INTO qrlist (qrCode, generateDate)
+		VALUES (UUID(), NOW());
+		<selectKey resultType="String" keyProperty="qrCode" order="AFTER">
+			SELECT qrCode
+			FROM qrlist
+			ORDER BY seq DESC
+			LIMIT 1;
+		</selectKey>
+	</insert>
+	
+	<update id="updatePlace" parameterType="hashmap">
+		UPDATE qrlist
+		SET
+			${place } = 1
+		WHERE
+			qrCode = #{qr } 
+	</update>
+	
+	<select id="getQRList" parameterType="hashmap" resultType="hashmap">
+		SELECT *
+		FROM qrlist
+	</select>
+	
+	<select id="checkPlace" parameterType="hashmap" resultType="int">
+		SELECT ${place }
+		FROM qrlist
+		WHERE
+			qrCode = #{qr }
+	</select>
+</mapper>
